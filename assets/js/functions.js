@@ -1,5 +1,8 @@
 ;(function($){
     'use strict';
+  
+
+
     let $document                                   = $(document),
         $body                                       = $('body'),
         $window                                     = $(window),
@@ -34,9 +37,8 @@
     }
 
     /*Register Select Element*/
-    if( $biolife_select.length ){
-        $biolife_select.niceSelect()
-    }
+   
+    
 
     /*Minicart Scroll handle*/
     if( $scroll_items.length){
@@ -71,10 +73,11 @@
         $block_tab.biolife_tab();
     }
 
-    /*Rating on single product*/
+    /*Rating on single product
     if( $rating_form.length){
         $rating_form.biolife_rating_form_handle();
     }
+    */
 
     /*Accodition menu*/
     if( $accodition.length){

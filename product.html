@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Muhindi Mweusi</title>
+    <title>product</title>
     <link href="https://fonts.googleapis.com/css?family=Cairo:400,600,700&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins:600&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400i,700i" rel="stylesheet">
@@ -18,9 +18,10 @@
     <link rel="stylesheet" href="assets/css/slick.min.css">
     <link rel="stylesheet" href="assets/css/style.css?v=2">
     <link rel="stylesheet" href="assets/css/main-color05.css">
+    <link rel="stylesheet" href="assets/css/sweetalert2.min.css"/>
 </head>
 <body class="biolife-body">
-
+   
     <!-- Preloader -->
     <div id="biof-loading">
         <div class="biof-loading-center">
@@ -66,10 +67,10 @@
                             <div class="mobile-search">
                                 <a href="javascript:void(0)" class="open-searchbox"><i class="biolife-icon icon-search"></i></a>
                                 <div class="mobile-search-content">
-                                    <form action="#" class="form-search" name="mobile-seacrh" method="get">
+                                    <form id="mobilesearch"  @submit.prevent="search" class="form-search" name="mobile-seacrh">
                                         <a href="#" class="btn-close"><span class="biolife-icon icon-close-menu"></span></a>
-                                        <input type="text" name="s" class="input-text" value="" placeholder="Search here...">
-                                     
+                                        <input type="text" v-model="query"  class="input-text" placeholder="Search all products...">
+                                      
                                         <button type="submit" class="btn-submit">go</button>
                                     </form>
                                 </div>
@@ -182,107 +183,280 @@
             </div>
         </div>
     </header>
-
+    
 
     <!--Navigation section-->
     <div class="container">
         <nav class="biolife-nav">
             <ul>
-                <li class="nav-item"><a href="index-2.html" class="permal-link">Home</a></li>
-                <li class="nav-item"><span class="current-page">ShoppingCart</span></li>
+                <li class="nav-item"><a href="index.html" class="permal-link">Home</a></li>
+                <li class="nav-item"><span class="current-page" id="current-page-link"></span></li>
             </ul>
         </nav>
     </div>
 
-    <div class="page-contain shopping-cart">
+    <div class="page-contain single-product">
+        <div class="container" id="single-product-section">
 
-        <!-- Main content -->
-        <div id="main-content" class="main-content">
-            <div class="container">
+            <!-- Main content -->
+            <div id="main-content" class="main-content">
+                
+                <!-- summary info -->
+                <div class="sumary-product single-layout">
+                    <div class="media">
+                        <ul id="product-image-list"  class="prod-carousel biolife-carousel slider-for" data-slick='{"arrows":false,"dots":false,"slidesMargin":30,"slidesToShow":1,"slidesToScroll":1,"fade":true,"asNavFor":".slider-nav"}'>
+                        </ul>
+                        <ul id="product-thumb-list" class="prod-carousel biolife-carousel slider-nav" data-slick='{"arrows":false,"dots":false,"centerMode":false,"focusOnSelect":true,"slidesMargin":10,"slidesToShow":4,"slidesToScroll":1,"asNavFor":".slider-for"}'>
 
-
-                <!--Cart Table-->
-                <div class="shopping-cart-container" id="cart-table">
-                    <div class="row text-center" v-if="cart.length == 0">
-                        <p><h3>No items in cart</h3></p>
-                        <a style="margin-top: 20px;" href="index.html" class="btn btn-primary">Start Shopping</a> 
+                        </ul>
                     </div>
-                    <div class="row" v-if="cart.length > 0">
-       
-                        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-                            <h3 class="box-title">Your cart items</h3>
-                            <form class="shopping-cart-form" action="#" method="post">
-                                <table class="shop_table cart-form">
-                                    <thead>
-                                    <tr>
-                                        <th class="product-name">Product Name</th>
-                                        <th class="product-price">Price</th>
-                                        <th class="product-quantity">Quantity</th>
-                                        <th class="product-subtotal">Total</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr class="cart_item"  v-for="(item, index) in cart">
-                                        <td class="product-thumbnail" data-title="Product Name">
-                                            <a class="prd-thumb" >
-                                                <figure><img width="113" height="113" v-bind:src="item.image" alt="item.name"></figure>
-                                            </a>
-                                            <a class="prd-name" v-text="item.name" ></a>
-                                            <div class="action">
-                                                <a style="cursor: pointer;"  @click="deleteItem(index)" class="remove"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
-                                            </div>
-                                        </td>
-                                        <td class="product-price" data-title="Price">
-                                            <div class="price price-contain">
-                                                <ins><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span v-text="item.price"></span></ins>
-                                            </div>
-                                        </td>
-                                        <td class="product-quantity" data-title="Quantity">
-                                            <div class="quantity-box type1">
-                                                <div class="qty-input">
-                                                    <input :value="item.quantity" @change="quantityChange($event,item.price,index)" id="qt254"  type="text" name="qty12554"  data-max_value="20" data-min_value="1" data-step="1">
-                                                    <a  class="qty-btn btn-up" @click="btnUpClickQuantity(item.price,index)"><i class="fa fa-caret-up" aria-hidden="true"></i></a>
-                                                    <a class="qty-btn btn-down" @click="btnDownClickQuantity(item.price,index)"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal" data-title="Total">
-                                            <div class="price price-contain">
-                                                <ins><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span v-text="item.subtotal"></span></ins>
-                                                
-                                            </div>
-                                        </td>
-                                    </tr>
-                                   
-                                    <tr class="cart_item wrap-buttons">
-                                        <td class="wrap-btn-control" colspan="4">
-                                            <a href="index.html" class="btn back-to-shop">Back to Shop</a>
-                                
-                                            <button @click="clearAll()" class="btn btn-clear" type="reset">clear all</button>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </form>
+                    <div class="product-attribute">
+                        <h3 class="title" id="title-prod"></h3>
+                        <div class="rating">
+                            <p class="star-rating"><span id="prod-star-line"></span></p>
+                            <span class="review-count" id="h-review-count"></span>
+                          
                         </div>
-                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-                            <div class="shpcart-subtotal-block">
-                                <div class="subtotal-line">
-                                    <b class="stt-name">Subtotal <span class="sub" v-text="quantity"></span></b>
-                                    <span class="stt-price"><span>Ksh &nbsp;</span><span v-text="total"></span></span>
+                        <span class="sku">Sku: #76584HH</span>
+                        <p class="excerpt"></p>
+                        <div class="price">
+                            <ins><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span id="price-prod"></span></ins>
+                           
+                        </div>
+                        <div class="product-atts">
+                          
+                        </div>
+                        
+                    </div>
+                    <div class="action-form">
+                        <div class="quantity-box">
+                            <span class="title">Quantity:</span>
+                            <div class="qty-input">
+                                <input id="qty12554" type="text" name="qty12554" value="1" data-max_value="20" data-min_value="1" data-step="1">
+                                <a class="qty-btn btn-up"><i class="fa fa-caret-up" aria-hidden="true"></i></a>
+                                <a class="qty-btn btn-down"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
+                            </div>
+                        </div>
+                        <div class="total-price-contain">
+                            <span class="title">Total Price:</span>
+                            <p class="price" ><span>Ksh&nbsp;</span><span id="tot-prod-price"></span></p>
+                        </div>
+                        <div class="buttons">
+                            <a  class="btn add-to-cart-btn">add to cart</a>
+                          
+                        </div>
+                      
+                       
+                        <div class="social-media">
+                            <ul class="social-list">
+                                <li><a href="#" class="social-link"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                <li><a href="#" class="social-link"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                <li><a href="#" class="social-link"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
+                                <li><a href="#" class="social-link"><i class="fa fa-share-alt" aria-hidden="true"></i></a></li>
+                                <li><a href="#" class="social-link"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                            </ul>
+                        </div>
+                      
+                    </div>
+                </div>
+
+                <!-- Tab info -->
+                <div class="product-tabs single-layout biolife-tab-contain">
+                    <div class="tab-head">
+                        <ul class="tabs">
+                            <li class="tab-element active"><a href="#tab_1st" class="tab-link">Products Details</a></li>
+                            <li class="tab-element" ><a href="#tab_4th" class="tab-link">Customer Reviews <sup id="sup-rev"></sup></a></li>
+                            <li class="tab-element" ><a href="#tab_3rd" class="tab-link">Shipping & Delivery</a></li>
+                        </ul>
+                    </div>
+                    <div class="tab-content">
+                        <div id="tab_1st" class="tab-contain desc-tab active">
+                          
+                        </div>
+                        <div id="tab_2nd" class="tab-contain addtional-info-tab">
+                            <table class="tbl_attributes">
+                                <tbody>
+                                <tr>
+                                    <th>Color</th>
+                                    <td><p>Black, Blue, Purple, Red, Yellow</p></td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <td><p>S, M, L</p></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="tab_3rd" class="tab-contain shipping-delivery-tab">
+                            <div class="accodition-tab biolife-accodition">
+                                <ul class="tabs">
+                                    <li class="tab-item">
+                                        <span class="title btn-expand">How long will it take to receive my order?</span>
+                                        <div class="content">
+                                            <p>Orders placed before 3pm eastern time will normally be processed and shipped by the following business day. For orders received after 3pm, they will generally be processed and shipped on the second business day. For example if you place your order after 3pm on Monday the order will ship on Wednesday. Business days do not include Saturday and Sunday and all Holidays. Please allow additional processing time if you order is placed on a weekend or holiday. Once an order is processed, speed of delivery will be determined as follows based on the shipping mode selected:</p>
+                                            <div class="desc-expand">
+                                                <span class="title">Shipping mode</span>
+                                                <ul class="list">
+                                                    <li>Standard (in transit 3-5 business days)</li>
+                                                    <li>Priority (in transit 2-3 business days)</li>
+                                                    <li>Express (in transit 1-2 business days)</li>
+                                                    <li>Gift Card Orders are shipped via USPS First Class Mail. First Class mail will be delivered within 8 business days</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="tab-item">
+                                        <span class="title btn-expand">How is the shipping cost calculated?</span>
+                                        <div class="content">
+                                            <p>You will pay a shipping rate based on the weight and size of the order. Large or heavy items may include an oversized handling fee. Total shipping fees are shown in your shopping cart. Please refer to the following shipping table:</p>
+                                            <p>Note: Shipping weight calculated in cart may differ from weights listed on product pages due to size and actual weight of the item.</p>
+                                        </div>
+                                    </li>
+                                    <li class="tab-item">
+                                        <span class="title btn-expand">Why Didn’t My Order Qualify for FREE shipping?</span>
+                                        <div class="content">
+                                            <p>We do not deliver to P.O. boxes or military (APO, FPO, PSC) boxes. We deliver to all 50 states plus Puerto Rico. Certain items may be excluded for delivery to Puerto Rico. This will be indicated on the product page.</p>
+                                        </div>
+                                    </li>
+                                    <li class="tab-item">
+                                        <span class="title btn-expand">Shipping Restrictions?</span>
+                                        <div class="content">
+                                            <p>We do not deliver to P.O. boxes or military (APO, FPO, PSC) boxes. We deliver to all 50 states plus Puerto Rico. Certain items may be excluded for delivery to Puerto Rico. This will be indicated on the product page.</p>
+                                        </div>
+                                    </li>
+                                    <li class="tab-item">
+                                        <span class="title btn-expand">Undeliverable Packages?</span>
+                                        <div class="content">
+                                            <p>Occasionally packages are returned to us as undeliverable by the carrier. When the carrier returns an undeliverable package to us, we will cancel the order and refund the purchase price less the shipping charges. Here are a few reasons packages may be returned to us as undeliverable:</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="tab_4th" class="tab-contain review-tab">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-5 col-md-5 col-sm-6 col-xs-12">
+                                        <div class="rating-info">
+                                            <p class="index"><strong class="rating" id="h-rating"></strong>out of 5</p>
+                                            <div class="rating"><p class="star-rating"><span id="h-star-line"></span></p></div>
+                                            <p class="see-all" id="h-see-all"></p>
+                                            <ul class="options">
+                                                <li>
+                                                    <div class="detail-for">
+                                                        <span class="option-name">5stars</span>
+                                                        <span class="progres">
+                                                            <span  class="line-100percent"><span class="percent" id="h-line5star"></span></span>
+                                                        </span>
+                                                        <span class="number" id="h-5star"></span>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="detail-for">
+                                                        <span class="option-name">4stars</span>
+                                                        <span class="progres">
+                                                            <span  class="line-100percent"><span class="percent" id="h-line4star"></span></span>
+                                                        </span>
+                                                        <span class="number" id="h-4star"></span>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="detail-for">
+                                                        <span class="option-name">3stars</span>
+                                                        <span class="progres">
+                                                            <span  class="line-100percent"><span class="percent" id="h-line3star"></span></span>
+                                                        </span>
+                                                        <span class="number" id="h-3star" ></span>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="detail-for">
+                                                        <span class="option-name">2stars</span>
+                                                        <span class="progres">
+                                                            <span  class="line-100percent"><span class="percent" id="h-line2star"></span></span>
+                                                        </span>
+                                                        <span class="number" id="h-2star"></span>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="detail-for">
+                                                        <span class="option-name">1star</span>
+                                                        <span class="progres">
+                                                            <span  class="line-100percent"><span class="percent" id="h-line1star"></span></span>
+                                                        </span>
+                                                        <span class="number" id="h-1star"></span>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
+                                        <div class="review-form-wrapper">
+                                            <span class="title">Submit your review</span>
+                                            <form @submit.prevent="submit" id="reviewform">
+                                                <div class="comment-form-rating">
+                                                    <label>1. Your rating of this products:</label>
+                                                    <p class="stars">
+                                                        <span>
+                                                            <a class="btn-rating" href="#"><i data-value="1"  class="fa fa-star-o" aria-hidden="true"></i></a>
+                                                            <a class="btn-rating"  href="#"><i data-value="2" class="fa fa-star-o" aria-hidden="true"></i></a>
+                                                            <a class="btn-rating"  href="#"><i data-value="3" class="fa fa-star-o" aria-hidden="true"></i></a>
+                                                            <a class="btn-rating"  href="#"><i data-value="4" class="fa fa-star-o" aria-hidden="true"></i></a>
+                                                            <a class="btn-rating"  href="#"><i data-value="5" class="fa fa-star-o" aria-hidden="true"></i></a>
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                                <p class="form-row">
+                                                    <input type="text" v-model="name"  placeholder="Your name" required>
+                                                </p>
+                                                <p class="form-row">
+                                                    <input type="email" v-model="email" placeholder="Email address" required>
+                                                </p>
+                                                <p class="form-row">
+                                                    <input type="text" v-model="title" placeholder="Title" required>
+                                                </p>
+                                                <p class="form-row">
+                                                    <textarea v-model="review"  cols="30" rows="10" placeholder="Write your review here..." required></textarea>
+                                                </p>
+                                                <p class="form-row">
+                                                    <button type="submit" name="submit">submit review</button>
+                                                </p>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-                              
-                                
-                                <div class="btn-checkout">
-                                    <a @click="opencheckout()" class="btn checkout">Check out</a>
-                                </div>  
+                                <div id="comments">
+                                    <ol class="commentlist">
+                                     
+                               
+                                    
+                                    </ol>
+                                    <div class="biolife-panigations-block version-2">
+                                       
+                                        <div class="result-count">
+                                            <p class="txt-count"><b id="h-to-text"></b> of <b id="h-total-reviews"></b> reviews</p>
+                                            <a href="#" class="link-to">See all<i class="fa fa-caret-right" aria-hidden="true"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                
+                <!-- related products -->
+                <div class="product-related-box single-layout">
+                    <div class="biolife-title-box lg-margin-bottom-26px-im">
+                        <span class="biolife-icon icon-organic"></span>
+                        <span class="subtitle">All the best item for You</span>
+                        <h3 class="main-title">Related Products</h3>
+                    </div>
+                    <ul class="related-products products-list biolife-carousel nav-center-02 nav-none-on-mobile" data-slick='{"rows":1,"arrows":true,"dots":false,"infinite":false,"speed":400,"slidesMargin":0,"slidesToShow":5, "responsive":[{"breakpoint":1200, "settings":{ "slidesToShow": 4}},{"breakpoint":992, "settings":{ "slidesToShow": 3, "slidesMargin":20 }},{"breakpoint":768, "settings":{ "slidesToShow": 2, "slidesMargin":10}}]}'>
 
+
+                    </ul>
+                </div>
+                
             </div>
         </div>
     </div>
@@ -360,7 +534,7 @@
                             <div class="payment-methods layout-02 xs-margin-top-40px sm-margin-top-19px">
                                 <h4 class="title">Payments System:</h4>
                                 <ul class="payments">
-                                    <li><a href="#" class="payment-link"><img src="assets/images/card1.jpg" width="51" height="36" alt=""></a></li>
+                                    
                                     <li><a href="#" class="payment-link"><img src="assets/images/card2.jpg" width="51" height="36" alt=""></a></li>
                                     <li><a href="#" class="payment-link"><img src="assets/images/card3.jpg" width="51" height="36" alt=""></a></li>
                                     <li><a href="#" class="payment-link"><img src="assets/images/card4.jpg" width="51" height="36" alt=""></a></li>
@@ -383,7 +557,7 @@
     </footer>
 
 
-   
+    
     <!--Footer For Mobile-->
     <div class="mobile-footer">
         <div class="mobile-footer-inner">
@@ -427,19 +601,24 @@
            
         </div>
     </div>
+
     <!-- Scroll Top Button -->
     <a class="btn-scroll-top"><i class="biolife-icon icon-left-arrow"></i></a>
     <script src="assets/js/vue.min.js"></script>
     <script src="assets/js/axios.min.js"></script>
     <script src="assets/js/jquery-3.4.1.min.js"></script>
+    <script src="assets/js/sweetalert2.all.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/jquery.countdown.min.js"></script>
     <script src="assets/js/jquery.nice-select.min.js"></script>
     <script src="assets/js/jquery.nicescroll.min.js"></script>
     <script src="assets/js/slick.min.js"></script>
     <script src="assets/js/index.js?v=2"></script>
+    <script src="assets/js/product.js?v=2"></script>
     <script src="assets/js/biolife.framework.js"></script>
     <script src="assets/js/functions.js"></script>
+    
+   
 </body>
 
 </html>

@@ -1,6 +1,7 @@
 /*Biolife Framework*/
 ;(function ($) {
     'use strict';
+  
 
     let $clone_to_mobile_sidebar 	= $('.clone-to-mobile-sidebar'),
         $sidebar                    = $('#sidebar'),
@@ -9,15 +10,16 @@
     	BIOLIFE_MOBILE_MENU 		= {
 
     		init:function(obj){
+                
 				this.wrap_container();
 				this.clone_menus(obj);
 				return this;
 		    },
 
     		clone_menus: function (obj) {
-				let i 					= 0,
+				    let i 					= 0,
 				    panels_html_args 	= Array();
-
+                    $.get(DEPARMENT_URL, function(response) {
 				obj.each(function () {
 				    let $this               = $(this),
 				        $this_menu_id       = $this.attr('id'),
@@ -32,10 +34,11 @@
 				        });
 				        $thisClone.find('.biolife-menu').addClass('biolife-menu-clone');
 				        let $thisMainPanel = $('#biolife-clone-wrap .biolife-panels #biolife-main-panel ul');
-				        $thisMainPanel.append( $thisClone.html());
+				         $thisMainPanel.append( $thisClone.html());
 				        BIOLIFE_MOBILE_MENU.insert_children( $thisMainPanel, i);
 				    }
 				});
+               });
 
 				$document.on('click', '.biolife-next-panel', function (e) {
 		            e.preventDefault();
@@ -263,6 +266,7 @@
                     btn.addClass('selected');
                     btn.parents('span').addClass('rated');
                 }
+                
             });
         });
     };
@@ -407,6 +411,9 @@
 
     $.fn.biolife_sidebar_handle();
     
+
+   
+
 }( jQuery ));
 
 

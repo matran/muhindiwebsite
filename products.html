@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Muhindi Mweusi</title>
+    <title>Muhindi Mweusi --products</title>
     <link href="https://fonts.googleapis.com/css?family=Cairo:400,600,700&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins:600&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400i,700i" rel="stylesheet">
@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="assets/css/slick.min.css">
     <link rel="stylesheet" href="assets/css/style.css?v=2">
     <link rel="stylesheet" href="assets/css/main-color05.css">
+    <link rel="stylesheet" href="assets/css/sweetalert2.min.css"/>
 </head>
 <body class="biolife-body">
 
@@ -66,14 +67,15 @@
                             <div class="mobile-search">
                                 <a href="javascript:void(0)" class="open-searchbox"><i class="biolife-icon icon-search"></i></a>
                                 <div class="mobile-search-content">
-                                    <form action="#" class="form-search" name="mobile-seacrh" method="get">
+                                    <form id="mobilesearch"  @submit.prevent="search" class="form-search" name="mobile-seacrh">
                                         <a href="#" class="btn-close"><span class="biolife-icon icon-close-menu"></span></a>
-                                        <input type="text" name="s" class="input-text" value="" placeholder="Search here...">
-                                     
+                                        <input type="text" v-model="query"  class="input-text" placeholder="Search all products...">
+                                      
                                         <button type="submit" class="btn-submit">go</button>
                                     </form>
                                 </div>
                             </div>
+
                             <div class="wishlist-block hidden-sm hidden-xs">
                                 <a href="javascript:void(0)" class="link-to dropdown-account">
                                     <span class="icon-qty-combine">
@@ -89,6 +91,7 @@
                                  </ul>
                              </div>   
                             </div>
+                           
                             <div class="minicart-block" id="minicart-section">
                                 <div class="minicart-contain">
                                     <a href="javascript:void(0)" class="link-to">
@@ -183,105 +186,141 @@
         </div>
     </header>
 
+    
 
     <!--Navigation section-->
     <div class="container">
         <nav class="biolife-nav">
             <ul>
-                <li class="nav-item"><a href="index-2.html" class="permal-link">Home</a></li>
-                <li class="nav-item"><span class="current-page">ShoppingCart</span></li>
+                <li class="nav-item"><a href="index.html" class="permal-link">Home</a></li>
+                <li class="nav-item"><span class="current-page" id="nav-current"></span></li>
             </ul>
         </nav>
     </div>
 
-    <div class="page-contain shopping-cart">
+    <div class="page-contain category-page no-sidebar">
+        <div class="container">
+            <div class="row">
 
-        <!-- Main content -->
-        <div id="main-content" class="main-content">
-            <div class="container">
+                <!-- Main content -->
+                <div id="main-content" class="main-content col-lg-12 col-md-12 col-sm-12 col-xs-12">
+               
+
+                  <!--no product section-->
+                  <div class="text-center" id="top-prod-loader" ><span>Loading</span><img src="assets/images/loading.svg"  style="height: 40px;"/></div>
+                  
+                  <div class="text-center" id="errorsection" style="display: none;">
+                      <img src="assets/images/bag.svg" style="width: 50px; height: 50px;"/>
+                      <p><h3 id="errortext">No items found</h3></p>
+                  </div>
 
 
-                <!--Cart Table-->
-                <div class="shopping-cart-container" id="cart-table">
-                    <div class="row text-center" v-if="cart.length == 0">
-                        <p><h3>No items in cart</h3></p>
-                        <a style="margin-top: 20px;" href="index.html" class="btn btn-primary">Start Shopping</a> 
-                    </div>
-                    <div class="row" v-if="cart.length > 0">
-       
-                        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-                            <h3 class="box-title">Your cart items</h3>
-                            <form class="shopping-cart-form" action="#" method="post">
-                                <table class="shop_table cart-form">
-                                    <thead>
-                                    <tr>
-                                        <th class="product-name">Product Name</th>
-                                        <th class="product-price">Price</th>
-                                        <th class="product-quantity">Quantity</th>
-                                        <th class="product-subtotal">Total</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr class="cart_item"  v-for="(item, index) in cart">
-                                        <td class="product-thumbnail" data-title="Product Name">
-                                            <a class="prd-thumb" >
-                                                <figure><img width="113" height="113" v-bind:src="item.image" alt="item.name"></figure>
-                                            </a>
-                                            <a class="prd-name" v-text="item.name" ></a>
-                                            <div class="action">
-                                                <a style="cursor: pointer;"  @click="deleteItem(index)" class="remove"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
-                                            </div>
-                                        </td>
-                                        <td class="product-price" data-title="Price">
-                                            <div class="price price-contain">
-                                                <ins><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span v-text="item.price"></span></ins>
-                                            </div>
-                                        </td>
-                                        <td class="product-quantity" data-title="Quantity">
-                                            <div class="quantity-box type1">
-                                                <div class="qty-input">
-                                                    <input :value="item.quantity" @change="quantityChange($event,item.price,index)" id="qt254"  type="text" name="qty12554"  data-max_value="20" data-min_value="1" data-step="1">
-                                                    <a  class="qty-btn btn-up" @click="btnUpClickQuantity(item.price,index)"><i class="fa fa-caret-up" aria-hidden="true"></i></a>
-                                                    <a class="qty-btn btn-down" @click="btnDownClickQuantity(item.price,index)"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal" data-title="Total">
-                                            <div class="price price-contain">
-                                                <ins><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span v-text="item.subtotal"></span></ins>
-                                                
-                                            </div>
-                                        </td>
-                                    </tr>
-                                   
-                                    <tr class="cart_item wrap-buttons">
-                                        <td class="wrap-btn-control" colspan="4">
-                                            <a href="index.html" class="btn back-to-shop">Back to Shop</a>
-                                
-                                            <button @click="clearAll()" class="btn btn-clear" type="reset">clear all</button>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </form>
-                        </div>
-                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-                            <div class="shpcart-subtotal-block">
-                                <div class="subtotal-line">
-                                    <b class="stt-name">Subtotal <span class="sub" v-text="quantity"></span></b>
-                                    <span class="stt-price"><span>Ksh &nbsp;</span><span v-text="total"></span></span>
+                     <!-- products content -->
+                    <div class="product-category grid-style" id="main" style="display: none;">
+                        <div id="top-functions-area" class="top-functions-area"  >
+                            <div class="flt-item to-left group-on-mobile">
+                                <span class="flt-title">Refine</span>
+                                <a href="#" class="icon-for-mobile">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </a>
+                                <div class="wrap-selectors">
+                                    <form action="#" name="frm-refine" method="get">
+                                        <span class="title-for-mobile">Refine Products By</span>
+                                        <div data-title="Price:" class="selector-item">
+                                            <select name="price" class="selector">
+                                                <option value="all">Price</option>
+                                                <option value="class-1st">Less than 50</option>
+                                                <option value="class-2nd">50-100</option>
+                                                <option value="class-3rd">100-200</option>
+                                                <option value="class-4th">200-500</option>
+                                                <option value="class-5th">500-1000</option>
+                                                <option value="class-6th">1000-3000</option>
+                                                <option value="class-7th">More than 3000</option>
+                                            </select>
+                                        </div>
+                                        <div data-title="Brand:" class="selector-item">
+                                            <select name="brad" class="selector">
+                                                <option value="all">Top brands</option>
+                                                <option value="br2">Brand first</option>
+                                                <option value="br3">Brand second</option>
+                                                <option value="br4">Brand third</option>
+                                                <option value="br5">Brand fourth</option>
+                                                <option value="br6">Brand fiveth</option>
+                                            </select>
+                                        </div>
+                                       
+                                        <p class="btn-for-mobile"><button type="submit" class="btn-submit">Go</button></p>
+                                    </form>
                                 </div>
-                              
-                                
-                                <div class="btn-checkout">
-                                    <a @click="opencheckout()" class="btn checkout">Check out</a>
-                                </div>  
+                            </div>
+                            <div class="flt-item to-right">
+                                <span class="flt-title">Sort</span>
+                                <div class="wrap-selectors">
+                                    <div class="selector-item orderby-selector">
+                                        <select name="orderby" class="orderby" aria-label="Shop order">
+                                            <option value="menu_order" selected="selected">Default sorting</option>
+                                            <option value="popularity">popularity</option>
+                                            <option value="rating">product rating</option>
+                                            <option value="date">newness</option>
+                                            <option value="price-asc">price: low to high</option>
+                                            <option value="price-desc">price: high to low</option>
+                                        </select>
+                                    </div>
+                                    <div class="selector-item viewmode-selector">
+                                        <a  class="viewmode grid-mode active"><i class="biolife-icon icon-grid"></i></a>
+  
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                       <div id="product-list-section">
+                           <div class="text-center" style="display: none;" id="prod-loader"><span>Loading</span><img src="assets/images/loading.svg"  style="height: 40px;"/></div>
+                        <div class="row" >
+                            <ul class="products-list" >
+                                <li v-for="product in products" class="product-item col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                                    <div class="contain-product layout-default">
+                                        <div class="product-thumb" @click="load(product.id,product.name,product.sku,product.description,product.details,product.price,product.image)">
+                                            <a style="cursor: pointer;" class="link-to-product">
+                                                <img style="height: 170px; object-fit: contain;" v-bind:src="product.image" alt="product.name"  class="product-thumnail" @error="replaceByDefault">
+                                            </a>
+                                        </div>
+                                        <div class="info">
+                                            
+                                            <h4 class="product-title"><a href="#" class="pr-name" v-text="product.name"></a></h4>
+                                            <div class="price">
+                                                <ins><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span v-text="product.price"></span></ins>
+        
+                                            </div>
+                                         
+                                            <div class="slide-down-box">
+                                                
+                                                <div class="buttons">
+                                
+                                                    <a  @click="addtocart(product.id,product.name,product.description,product.price,product.image)" class="btn add-to-cart-btn"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i>add to cart</a>
+                                                   
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                             
+                            </ul>
+                        </div>
 
-                
+                        <div class="biolife-panigations-block">
+                            <ul class="panigation-contain">
+                                <li class="paginate-prod-nos"><div v-text="fromdata"></div> <div>-</div><div v-text="alreadydisplayed"></div> <div>of</div><div v-text="totalitems"></div></li>
+						
+                                <li><button  class="btn btn-primary"  @click="previous()" :disabled='setDisabledP'><i class="fa fa-angle-left" aria-hidden="true"></i>&nbsp;Previous</button></li>
+                                <li><button class="btn btn-primary" @click="next()" :disabled='setDisabledN'> Next&nbsp;<i class="fa fa-angle-right" aria-hidden="true" ></i></button></li>
+                            </ul>
+                        </div>
+                    </div>  
+                    </div>
+
+                </div>
 
             </div>
         </div>
@@ -360,7 +399,7 @@
                             <div class="payment-methods layout-02 xs-margin-top-40px sm-margin-top-19px">
                                 <h4 class="title">Payments System:</h4>
                                 <ul class="payments">
-                                    <li><a href="#" class="payment-link"><img src="assets/images/card1.jpg" width="51" height="36" alt=""></a></li>
+                                    
                                     <li><a href="#" class="payment-link"><img src="assets/images/card2.jpg" width="51" height="36" alt=""></a></li>
                                     <li><a href="#" class="payment-link"><img src="assets/images/card3.jpg" width="51" height="36" alt=""></a></li>
                                     <li><a href="#" class="payment-link"><img src="assets/images/card4.jpg" width="51" height="36" alt=""></a></li>
@@ -383,7 +422,6 @@
     </footer>
 
 
-   
     <!--Footer For Mobile-->
     <div class="mobile-footer">
         <div class="mobile-footer-inner">
@@ -432,6 +470,7 @@
     <script src="assets/js/vue.min.js"></script>
     <script src="assets/js/axios.min.js"></script>
     <script src="assets/js/jquery-3.4.1.min.js"></script>
+    <script src="assets/js/sweetalert2.all.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/jquery.countdown.min.js"></script>
     <script src="assets/js/jquery.nice-select.min.js"></script>
@@ -440,6 +479,7 @@
     <script src="assets/js/index.js?v=2"></script>
     <script src="assets/js/biolife.framework.js"></script>
     <script src="assets/js/functions.js"></script>
+    <script src="assets/js/products.js?v=2"></script>
 </body>
 
 </html>

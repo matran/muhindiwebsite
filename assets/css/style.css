@@ -121,7 +121,7 @@ input[type="password"],
 input[type="tel"],
 select,
 input[type="search"]{
-    border: 1px solid #e6e6e6;
+    border: 1px solid #cecece;
     border-radius: 0;
     padding: 7px 20px;
     max-width: 100%;
@@ -2184,7 +2184,16 @@ body.open-mobile-search .header-area.layout-02{
     font-weight: 600;
     margin: 7px 0 0;
     text-align: center;
+   
 }
+
+.product-title a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    width: calc(100%);
+ }
+
 .contain-product .info .product-title a{
     color: #222222;
     display: inline-block;
@@ -13394,10 +13403,14 @@ body.open-quickview-block .biolife-quickview-block{
 .width-100percent{ width: 100%;}
 .width-90percent{ width: 90%;}
 .width-80percent{ width: 80%;}
+.width-70percent{ width: 70%;}
+.width-60percent{ width: 60%;}
+.width-50percent{ width: 50%;}
 .width-40percent{ width: 40%;}
 .width-30percent{ width: 30%;}
 .width-20percent{ width: 20%;}
 .width-10percent{ width: 10%;}
+.width-0percent{ width: 0%;}
 .min-height-346px{ min-height: 346px;}
 
 @media ( min-width: 768px){
@@ -14565,4 +14578,145 @@ body.open-quickview-block .biolife-quickview-block{
     .biolife-carousel.nav-none-on-mobile.nav-center-03 .slick-arrow.next{
         display: none !important;
     }
+}
+.paginate-prod-nos {
+    margin-right: 20px;
+     padding-top: 8px;
+      font-size: 14px !important;
+       display:inline-block
+}
+.paginate-prod-nos div {
+    display: inline;
+}
+.pass-section {
+    display: flex; 
+    flex-direction: row; 
+    align-items: center;
+    border: 1px solid #bbb9b9 !important;
+    border-radius: 7px !important;
+}
+#fid-pass-reg, #fid-pass-login{
+     border: 0;
+    width: 100%;
+    height: 40px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+}
+
+.form-input-control {
+    border: 1px solid #bbb9b9 !important;
+    border-radius: 7px !important;
+   width: 100%;
+   height: 40px;
+   padding: 6px 12px;
+   font-size: 14px;
+   line-height: 1.42857143;
+   color: #555;
+   background-color: #fff;
+   background-image: none;
+}
+.account-menu {
+    right: 40%;
+    margin-right: -34px;
+    font-size: 14px;
+    position: absolute;
+    display: inline-block;
+     top: 100%;
+    visibility: hidden;
+    z-index: 50;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px 0 #AAA
+} 
+
+.wishlist-block:hover .account-menu {
+    visibility: visible;
+}
+.account-contain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    list-style: none;
+}
+.account-contain li {
+    padding-top: 5px;
+}
+.title-account {
+    font-size: 14px;
+    line-height: 16px;
+    display: inline;
+    color: #555555;
+    font-weight: 600;
+}
+.select-ship-to {
+   border: 1px solid #cecece;
+   color: inherit;
+   width: 50%;
+   background-color: #ffffff;
+   padding-left: 20px;
+   padding-right: 32px;
+   -webkit-appearance: menulist;
+}
+
+.place-order{
+    display: inline-block;
+    background-color: #eeeeee;
+    border: none;
+    border-radius: 9999px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    padding: 16px 10px 15px;
+    min-width: 154px;
+    text-align: center;
+    background-color: #221a6e;
+}
+.place-order:hover{
+    background-color: #444444;
+    color: #ffffff;
+}
+.place-order:focus {
+    color:#ffffff;
+}
+.order-items {
+    padding: 8px;
+    margin: 4px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.title-order {
+    font-weight: bold;
+    margin-right: 8px;
+    color: black;
+}
+.order-date {
+    font-weight: bold;
+    color: rgb(9, 9, 179);
+    white-space: nowrap;
+}
+.order-customer {
+ font-size: 18px;
+ color: black;
+ white-space: nowrap;
+}
+.order-wrap {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.order-status {
+  white-space: nowrap;  
+}
+.order-id {
+    white-space: nowrap;
 }
