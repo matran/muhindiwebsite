@@ -5,6 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Muhindi Mweusi</title>
     <link href="https://fonts.googleapis.com/css?family=Cairo:400,600,700&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins:600&amp;display=swap" rel="stylesheet">
@@ -16,7 +19,7 @@
     <link rel="stylesheet" href="assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="assets/css/nice-select.css">
     <link rel="stylesheet" href="assets/css/slick.min.css">
-    <link rel="stylesheet" href="assets/css/style.css?v=2">
+    <link rel="stylesheet" href="assets/css/style.css?v=3">
     <link rel="stylesheet" href="assets/css/main-color05.css">
     <link rel="stylesheet" href="assets/css/sweetalert2.min.css"/>
 
@@ -54,8 +57,8 @@
         <div class="header-middle biolife-sticky-object ">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-3 col-md-2 col-md-6 col-xs-6">
-                        <a href="index.html" class="biolife-logo"><img src="assets/images/logo-biolife-5.png" alt="biolife logo" width="135" height="36"></a>
+                    <div class="col-lg-3 col-md-2 col-md-6 col-xs-6 logo-wrap">
+                        <a  href="index.html" class="biolife-logo logo-image"><img class="m-img-logo"  src="assets/images/logo.png" alt="muhindi logo" ></a>
                     </div>
                     <div class="col-lg-6 col-md-7 hidden-sm hidden-xs">
                         <div class="primary-menu">
@@ -304,24 +307,32 @@
                                       
                                         <li v-for="product in products" class="product-item col-lg-2 col-md-3 col-sm-4 col-xs-6">
                                             <div class="contain-product layout-default">
-                                                <div class="product-thumb" @click="load(product.id,product.name,product.sku,product.description,product.details,product.price,product.image)">
+                                                <div v-if="product.offerprice==0" class="product-thumb" @click="load(product.id,product.name,product.sku,product.description,product.details,product.price,product.image,product.price,false)">
                                                     <a style="cursor: pointer;" class="link-to-product">
                                                         <img  style="height: 170px; object-fit: contain;" v-bind:src="product.image" alt="product.name"  class="product-thumnail" onerror="if (this.src != 'assets/images/cart.svg') this.src = 'assets/images/cart.svg';">
                                                     </a>
                                                 </div>
+
+                                                <div v-if="product.offerprice!=0" class="product-thumb" @click="load(product.id,product.name,product.sku,product.description,product.details,product.offerprice,product.image,product.price,true)">
+                                                    <a style="cursor: pointer;" class="link-to-product">
+                                                        <img  style="height: 170px; object-fit: contain;" v-bind:src="product.image" alt="product.name"  class="product-thumnail" onerror="if (this.src != 'assets/images/cart.svg') this.src = 'assets/images/cart.svg';">
+                                                    </a>
+                                                </div>
+
                                                 <div class="info">
                                                     
                                                     <h4 class="product-title"><a href="#" class="pr-name" v-text="product.name"></a></h4>
-                                                    <div class="price">
-                                                        <ins><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span v-text="product.price"></span></ins>
-                
+                                                    <div class="price" style="position: relative;">
+                                                        <ins v-if="product.offerprice==0"><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span v-text="product.price"></span></span></ins>
+                                                        <ins v-if="product.offerprice!=0"><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span v-text="product.offerprice"></span></span></ins>
+                                                        <del style="position: absolute;" v-if="product.offerprice!=0"><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span v-text="product.price"></span></span></del>
                                                     </div>
                                                  
                                                     <div class="slide-down-box">
                                                         
                                                         <div class="buttons">
-                                        
-                                                            <a  @click="addtocart(product.id,product.name,product.description,product.price,product.image)" class="btn add-to-cart-btn"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i>add to cart</a>
+                                                            <a v-if="product.offerprice!=0"  @click="addtocart(product.id,product.name,product.description,product.offerprice,product.image,product.price,true)" class="btn add-to-cart-btn"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i>add to cart</a>
+                                                            <a v-if="product.offerprice==0"  @click="addtocart(product.id,product.name,product.description,product.price,product.image,product.price,false)" class="btn add-to-cart-btn"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i>add to cart</a>
                                                            
                                                         </div>
                                                     </div>
@@ -518,7 +529,7 @@
     <script src="assets/js/jquery.nice-select.min.js"></script>
     <script src="assets/js/jquery.nicescroll.min.js"></script>
     <script src="assets/js/slick.min.js"></script>
-    <script src="assets/js/index.js?v=2"></script>
+    <script src="assets/js/index.js?v=3"></script>
     <script src="assets/js/biolife.framework.js"></script>
     <script src="assets/js/functions.js"></script>
     

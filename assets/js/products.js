@@ -82,7 +82,7 @@ methods: {
       });
 
    },
-      load: function (code,name,sku,description,details,price,image) {
+      load: function (code,name,sku,description,details,price,image,originalprice,offer) {
       localStorage.setItem("sku",sku)
       localStorage.setItem("code",code)
       localStorage.setItem("name",name)
@@ -90,6 +90,8 @@ methods: {
       localStorage.setItem("details",details)
       localStorage.setItem("image",image)
       localStorage.setItem("price",price)
+      localStorage.setItem("offer",offer)
+      localStorage.setItem("originalprice",originalprice)
       localStorage.setItem("query",query)
       window.open ('product.html','_self',false)
       setViews(code)
@@ -118,11 +120,11 @@ methods: {
         }, 1000);
     });
   },
-  addtocart: function(code,name,description,price,image){
+  addtocart: function(code,name,description,price,image,originalprice,offer){
       let quantity=1;
       let subtotal=price *  quantity
       this.cart=JSON.parse(localStorage.getItem("cart") || "[]");
-      this.cart.push({code:code,name: name, description: description,price: price,image:image,quantity:quantity,subtotal:subtotal});  
+      this.cart.push({code:code,name: name, description: description,price: price,originalprice:originalprice,offer:offer,image:image,quantity:quantity,subtotal:subtotal});  
       localStorage.setItem("cart", JSON.stringify(this.cart));
       minicart.setAll()
       Swal.fire({

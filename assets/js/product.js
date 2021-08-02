@@ -6,13 +6,20 @@ let code=localStorage.getItem('code')
 let image=localStorage.getItem('image')
 let details=localStorage.getItem('details')
 let query=localStorage.getItem('query')
+let offer=localStorage.getItem('offer')
+let originalprice=localStorage.getItem("originalprice")
 $('#tab_1st').append(details)
 $('#title-prod').text(localStorage.getItem('name'))
-$('#price-prod').text(localStorage.getItem('price'))
 $('#tot-prod-price').text(localStorage.getItem('price'))
 $('#current-page-link').text(name)
 $('.excerpt').text(description)
 $('.sku').text("Sku: " + sku)
+if(offer=='true'){
+    $('#wrap_price').append('<ins><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span id="price-prod">' + price+ '</span></ins>')  
+    $('#wrap_price').append(' <del><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span id="original-price">' + originalprice + '</span></span></del>')  
+}else if(offer=='false'){
+  $('#wrap_price').append('<ins><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span id="price-prod">' + price + '</span></ins>')  
+}
 let id=localStorage.getItem('code')
 const PRODUCT_URL=`${API_URL}/api/productimage/${id}`
 const REVIEW_URL=`${API_URL}/api/review`;
@@ -80,26 +87,47 @@ $.get(PRODUCT_URL, function(response) {
 
 $.get(RELATED_URL, function(response) {
     $.each(response, function(key, value) {
-        $(".related-products").slick('slickAdd','<li class="product-item">'+
-        '<div class="contain-product layout-default">'+
-            '<div class="product-thumb">'+
-                '<a href="#" class="link-to-product">'+
-                    '<img src="'+value.image+'" alt="dd" width="270" height="270" class="product-thumnail">'+
-                '</a>'+
-            '</div>'+
-            '<div class="info">'+
-                '<h4 class="product-title"><a href="#" class="pr-name">'+value.name+'</a></h4>'+
-                '<div class="price">'+
-                    '<ins><span class="price-amount"><span class="currencySymbol">KSh </span>'+value.price+'</span></ins>'+
-                '</div>'+
-                '<div class="slide-down-box">'+
-                '<div class="buttons">'+
-                    '<a onclick="addtocart(\'' +value.id+ '\', \'' +value.name+ '\',\'' +value.description+ '\',\'' +value.price+ '\',\'' +value.image+ '\')" class="btn add-to-cart-btn"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i>add to cart</a>'+
-                   '</div>'+
-               '</div>'+
-            '</div>'+
-        '</div>'+
-    '</li>');
+        var $li=$('<li/>').addClass("product-item")
+        var $div1=$('<div/>').addClass("contain-product layout-default")
+        if(value.offerprice==0){
+          $div1.append( '<div class="product-thumb" onclick="load(\'' +value.id+ '\', \'' +value.name+ '\', \'' +value.sku+ '\',  \'' +value.description+ '\',\'' +value.details+ '\', \'' +value.price+ '\',\'' +value.image+ '\',\'' +value.price+'\',\'' +false+ '\')" >'+
+          '<a style="cursor: pointer;" class="link-to-product">'+
+              '<img src="'+value.image+'" alt="'+value.name+'" width="270" height="270" class="product-thumnail">'+
+          '</a>'+
+         '</div>')
+        }else if(value.offerprice!=0){
+          $div1.append( '<div class="product-thumb" onclick="load(\'' +value.id+ '\', \'' +value.name+ '\', \'' +value.sku+ '\',  \'' +value.description+ '\',\'' +value.details+ '\', \'' +value.offerprice+ '\',\'' +value.image+ '\',\'' +value.price+'\',\'' +true+ '\')" >'+
+          '<a style="cursor: pointer;" class="link-to-product">'+
+              '<img src="'+value.image+'" alt="'+value.name+'" width="270" height="270" class="product-thumnail">'+
+          '</a>'+
+         '</div>')
+        }
+        var $info=$('<div/>').addClass("info")
+        $info.append('<h4 class="product-title"><a href="#" class="pr-name">'+value.name+'</a></h4>')
+         
+        if(value.offerprice==0){
+          $info.append('<div class="price" style="position: relative;">'+ 
+          '<ins><span class="price-amount"><span class="currencySymbol">KSh</span>'+value.price+'</span></ins>'+
+          '</div>')
+          $info.append('<div class="slide-down-box">'+
+          '<div class="buttons">'+
+              '<a onclick="addtocart(\'' +value.id+ '\', \'' +value.name+ '\',\'' +value.description+ '\',\'' +value.price+ '\',\'' +value.image+ '\',\'' +value.price+'\',\'' +false+ '\')" class="btn add-to-cart-btn"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i>add to cart</a>'+
+          '</div>'+
+          '</div>')
+        }else if(value.offerprice!=0){
+          $info.append('<div class="price" style="position: relative;">'+ 
+          '<ins><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span>'+value.offerprice+'</span></span></ins>'+
+          '<del style="position: absolute;"><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span>'+value.price+'</span></span></del>'+
+          '</div>')
+          $info.append('<div class="slide-down-box">'+
+          '<div class="buttons">'+
+              '<a onclick="addtocart(\'' +value.id+ '\', \'' +value.name+ '\',\'' +value.description+ '\',\'' +value.offerprice+ '\',\'' +value.image+ '\',\'' +value.price+'\',\'' +true+ '\')" class="btn add-to-cart-btn"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i>add to cart</a>'+
+          '</div>'+
+          '</div>')
+        }
+    
+         $div1.append($info).appendTo($li)
+        $(".related-products").slick('slickAdd',$li);
     });
 });
 
@@ -140,7 +168,7 @@ $('.add-to-cart-btn').click(function(){
 let subtotal=$('#tot-prod-price').text()
 let quantity=$("#qty12554").val()
 this.cart=JSON.parse(localStorage.getItem("cart") || "[]");
-this.cart.push({code: code,name: name, description: description,price: price,image:image,quantity:quantity ,subtotal:subtotal});  
+this.cart.push({code: code,name: name, description: description,price: price,originalprice:originalprice,offer:offer,image:image,quantity:quantity ,subtotal:subtotal});  
 localStorage.setItem("cart", JSON.stringify(this.cart));
 minicart.setAll()
 Swal.fire({
@@ -162,11 +190,11 @@ Swal.fire({
     })
 });
 
-function addtocart(code,name,description,price,image){
+function addtocart(code,name,description,price,image,originalprice,offer){
     let quantity=1;
     let subtotal=price *  quantity
     this.cart=JSON.parse(localStorage.getItem("cart") || "[]");
-    this.cart.push({code:code,name: name, description: description,price: price,image:image,quantity:quantity,subtotal:subtotal});  
+    this.cart.push({code:code,name: name, description: description,price: price,originalprice:originalprice,offer:offer,image:image,quantity:quantity,subtotal:subtotal});  
     localStorage.setItem("cart", JSON.stringify(this.cart));
     minicart.setAll()
     Swal.fire({

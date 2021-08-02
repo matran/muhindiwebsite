@@ -570,6 +570,13 @@ body{
         bottom: 80px;
         right: 30px;
     }
+    .m-img-logo {
+        width: 69px !important;
+        height: 69px !important;
+    }
+    .logo-image {
+        top: -16px !important;
+    }
 }
 .btn-scroll-top.showUp{
     -webkit-transform: scale(1);
@@ -14719,4 +14726,15 @@ body.open-quickview-block .biolife-quickview-block{
 }
 .order-id {
     white-space: nowrap;
+}
+.logo-image {
+    top: -20px;
+    position: absolute !important;
+}
+.logo-wrap {
+    position: relative !important;
+}
+.m-img-logo {
+    width: 100px;
+    height: 100px;
 }

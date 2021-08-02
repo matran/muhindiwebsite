@@ -68,26 +68,49 @@ $.get(ADVERT_URL, function(response) {
 
 $.get(VIEWS_URL, function(response) {
   $.each(response, function(key, value) {
-      $(".most-viewed-carousel").slick('slickAdd','<li class="product-item">'+
-      '<div class="contain-product layout-default">'+
-          '<div class="product-thumb" onclick="load(\'' +value.id+ '\', \'' +value.name+ '\', \'' +value.sku+ '\',  \'' +value.description+ '\',\'' +value.details+ '\', \'' +value.price+ '\',\'' +value.image+ '\')" >'+
-              '<a style="cursor: pointer;" class="link-to-product">'+
-                  '<img src="'+value.image+'" alt="Vegetables" width="270" height="270" class="product-thumnail">'+
-              '</a>'+
-         '</div>'+
-          '<div class="info">'+
-              '<h4 class="product-title"><a href="#" class="pr-name">'+value.name+'</a></h4>'+
-              '<div class="price ">'+
-                  '<ins><span class="price-amount"><span class="currencySymbol">KSh</span>'+value.price+'</span></ins>'+
-              '</div>'+
-              '<div class="slide-down-box">'+
-                  '<div class="buttons">'+
-                      '<a onclick="addtocart(\'' +value.id+ '\', \'' +value.name+ '\',\'' +value.description+ '\',\'' +value.price+ '\',\'' +value.image+ '\')" class="btn add-to-cart-btn"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i>add to cart</a>'+
-                  '</div>'+
-              '</div>'+
-          '</div>'+
+
+    var $li=$('<li/>').addClass("product-item")
+    var $div1=$('<div/>').addClass("contain-product layout-default")
+    if(value.offerprice==0){
+      $div1.append( '<div class="product-thumb" onclick="load(\'' +value.id+ '\', \'' +value.name+ '\', \'' +value.sku+ '\',  \'' +value.description+ '\',\'' +value.details+ '\', \'' +value.price+ '\',\'' +value.image+ '\',\'' +value.price+'\',\'' +false+ '\')" >'+
+      '<a style="cursor: pointer;" class="link-to-product">'+
+          '<img src="'+value.image+'" alt="'+value.name+'" width="270" height="270" class="product-thumnail">'+
+      '</a>'+
+     '</div>')
+    }else if(value.offerprice!=0){
+      $div1.append( '<div class="product-thumb" onclick="load(\'' +value.id+ '\', \'' +value.name+ '\', \'' +value.sku+ '\',  \'' +value.description+ '\',\'' +value.details+ '\', \'' +value.offerprice+ '\',\'' +value.image+ '\',\'' +value.price+'\',\'' +true+ '\')" >'+
+      '<a style="cursor: pointer;" class="link-to-product">'+
+          '<img src="'+value.image+'" alt="'+value.name+'" width="270" height="270" class="product-thumnail">'+
+      '</a>'+
+     '</div>')
+    }
+    var $info=$('<div/>').addClass("info")
+    $info.append('<h4 class="product-title"><a href="#" class="pr-name">'+value.name+'</a></h4>')
+     
+    if(value.offerprice==0){
+      $info.append('<div class="price" style="position: relative;">'+ 
+      '<ins><span class="price-amount"><span class="currencySymbol">KSh</span>'+value.price+'</span></ins>'+
+      '</div>')
+      $info.append('<div class="slide-down-box">'+
+      '<div class="buttons">'+
+          '<a onclick="addtocart(\'' +value.id+ '\', \'' +value.name+ '\',\'' +value.description+ '\',\'' +value.price+ '\',\'' +value.image+ '\',\'' +value.price+'\',\'' +false+ '\')" class="btn add-to-cart-btn"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i>add to cart</a>'+
       '</div>'+
-  '</li>');
+      '</div>')
+    }else if(value.offerprice!=0){
+      $info.append('<div class="price" style="position: relative;">'+ 
+      '<ins><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span>'+value.offerprice+'</span></span></ins>'+
+      '<del style="position: absolute;"><span class="price-amount"><span class="currencySymbol">Ksh&nbsp;</span><span>'+value.price+'</span></span></del>'+
+      '</div>')
+      $info.append('<div class="slide-down-box">'+
+      '<div class="buttons">'+
+          '<a onclick="addtocart(\'' +value.id+ '\', \'' +value.name+ '\',\'' +value.description+ '\',\'' +value.offerprice+ '\',\'' +value.image+ '\',\'' +value.price+'\',\'' +true+ '\')" class="btn add-to-cart-btn"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i>add to cart</a>'+
+      '</div>'+
+      '</div>')
+    }
+
+     $div1.append($info).appendTo($li)
+      $(".most-viewed-carousel").slick('slickAdd',$li);
+   
   });
 });
 
@@ -142,7 +165,7 @@ mounted () {
     });
 },
 methods: {
-    load: function (code,name,sku,description,details,price,image) {
+    load: function (code,name,sku,description,details,price,image,originalprice,offer) {
     localStorage.setItem("sku",sku)
     localStorage.setItem("code",code)
     localStorage.setItem("name",name)
@@ -150,6 +173,8 @@ methods: {
     localStorage.setItem("details",details)
     localStorage.setItem("image",image)
     localStorage.setItem("price",price)
+    localStorage.setItem("offer",offer)
+    localStorage.setItem("originalprice",originalprice)
     localStorage.setItem("query","Featured")
     window.open ('product.html','_self',false)
     setViews(code)
@@ -157,11 +182,11 @@ methods: {
 opencart: function(){
     window.open ('checkout.html','_self',false)
 },
-addtocart: function(code,name,description,price,image){
+addtocart: function(code,name,description,price,image,originalprice,offer){
     let quantity=1;
     let subtotal=price *  quantity
     this.cart=JSON.parse(localStorage.getItem("cart") || "[]");
-    this.cart.push({code:code,name: name, description: description,price: price,image:image,quantity:quantity,subtotal:subtotal});  
+    this.cart.push({code:code,name: name, description: description,price: price,originalprice:originalprice,offer:offer,image:image,quantity:quantity,subtotal:subtotal});  
     localStorage.setItem("cart", JSON.stringify(this.cart));
     minicart.setAll()
     Swal.fire({
@@ -187,7 +212,7 @@ addtocart: function(code,name,description,price,image){
 
 
 
-function load(code,name,sku,description,details,price,image){
+function load(code,name,sku,description,details,price,image,originalprice,offer){
   localStorage.setItem("sku",sku)
   localStorage.setItem("code",code)
   localStorage.setItem("name",name)
@@ -195,6 +220,8 @@ function load(code,name,sku,description,details,price,image){
   localStorage.setItem("details",details)
   localStorage.setItem("image",image)
   localStorage.setItem("price",price)
+  localStorage.setItem("offer",offer)
+  localStorage.setItem("originalprice",originalprice)
   localStorage.setItem("query","Most Viewed")
   window.open ('product.html','_self',false)
   setViews(code)
@@ -202,11 +229,11 @@ function load(code,name,sku,description,details,price,image){
 
 
 
- function addtocart(code,name,description,price,image){
+ function addtocart(code,name,description,price,image,originalprice,offer){
       let quantity=1;
       let subtotal=price *  quantity
       this.cart=JSON.parse(localStorage.getItem("cart") || "[]");
-      this.cart.push({code:code,name: name, description: description,price: price,image:image,quantity:quantity,subtotal:subtotal});  
+      this.cart.push({code:code,name: name, description: description,price: price,originalprice:originalprice,offer:offer,image:image,quantity:quantity,subtotal:subtotal});  
       localStorage.setItem("cart", JSON.stringify(this.cart));
       minicart.setAll()
       Swal.fire({
@@ -334,7 +361,7 @@ methods: {
      }
   }
 })
-
+/** top bar cart section */
 var minicart=new Vue({
   el: '#minicart-section',
     data () {
