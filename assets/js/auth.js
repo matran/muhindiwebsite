@@ -70,7 +70,7 @@ const launch = urlParams.get('launch');
    login: function(){
         $( "#login-progress" ).show();
         $( "#button-login" ).hide();
-        let login={ "role":"customer", "email":this.email,"password":this.password}
+        let login={ "email":this.email,"password":this.password}
         axios.post(urllogin,login).then(function (response) {
             $( "#login-progress" ).hide();
             $( "#button-login" ).show();
@@ -167,7 +167,7 @@ new Vue({
     register: function(){
         $( "#register-progress" ).show();
         $( "#button-register" ).hide();
-    let	users={ "role":"customer","firstname":this.firstname,"lastname":this.lastname, "email":this.remail, "password":this.rpassword ,"phone":this.tel}
+    let	users={ "firstname":this.firstname,"lastname":this.lastname, "email":this.remail, "password":this.rpassword ,"phone":this.tel}
     axios.post(urlregister,users).then(function (response) {
             if(response.data.status=='success'){
             window.open ('info.html','_self',false)					
